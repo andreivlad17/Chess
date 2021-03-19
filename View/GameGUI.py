@@ -51,8 +51,10 @@ def main():
                     if move in validMoves:
                         gameState.makeMove(move)
                         moveMade = True
-                    selectedSquare = ()
-                    playerClicks = []
+                        selectedSquare = ()
+                        playerClicks = []
+                    else:
+                        playerClicks = [selectedSquare]
         if moveMade:
             validMoves = gameState.getValidMoves()
             moveMade = False
