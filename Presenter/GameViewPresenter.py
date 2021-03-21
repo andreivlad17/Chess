@@ -36,6 +36,7 @@ class GameViewPresenter:
                     if len(playerClicks) == 2:
                         move = Move(playerClicks[0], playerClicks[1], gameState.board)
                         if move in validMoves:
+                            print(row, column)
                             gameState.makeMove(move)
                             moveMade = True
                             selectedSquare = ()
@@ -49,3 +50,4 @@ class GameViewPresenter:
             self.gameView.drawGameState(self.gameView.screen, gameState)
             self.gameView.clock.tick(self.gameView.MAX_FPS)
             pygame.display.flip()
+

@@ -1,5 +1,5 @@
 from Model.Piece import Piece
-from Model.Pieces.Board import Board
+from Model.Board import Board
 from Model.Pieces.Queen import Queen
 from Model.Pieces.King import King
 from Model.Pieces.Rook import Rook
@@ -27,19 +27,19 @@ class Game:
                 if isinstance(self.board[currentRow][currentColumn], Piece):
                     turn = self.board[currentRow][currentColumn].color  # get the color for the current turn
                     if (turn == "white" and self.whiteToMove) or (turn == "black" and not self.whiteToMove):
-                        pieceType = self.board[currentRow][currentColumn].__class__  # get the piece type
+                        pieceType = self.board[currentRow][currentColumn]  # get the piece type
                         if isinstance(pieceType, Pawn):
-                            self.board[currentRow][currentColumn].getPawnMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getPawnMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
                         elif isinstance(pieceType, Rook):
-                            self.board[currentRow][currentColumn].getRookMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getRookMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
                         elif isinstance(pieceType, Knight):
-                            self.board[currentRow][currentColumn].getKnightMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getKnightMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
                         elif isinstance(pieceType, Bishop):
-                            self.board[currentRow][currentColumn].getBishopMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getBishopMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
                         elif isinstance(pieceType, Queen):
-                            self.board[currentRow][currentColumn].getQueenMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getQueenMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
                         elif isinstance(pieceType, King):
-                            self.board[currentRow][currentColumn].getKingMoves(currentRow, currentColumn)
+                            self.board[currentRow][currentColumn].getKingMoves(currentRow, currentColumn, self.whiteToMove, self.board, self.moves)
         return self.moves
 
     def getValidMoves(self):
