@@ -47,7 +47,7 @@ class GameViewPresenter:
                 validMoves = gameState.getValidMoves()
                 moveMade = False
 
-            self.gameView.drawGameState(self.gameView.screen, gameState)
+            self.gameView.drawGameState(self.gameView.screen, gameState, validMoves, selectedSquare)
             self.gameView.clock.tick(self.gameView.MAX_FPS)
             pygame.display.flip()
 

@@ -45,9 +45,29 @@ class GameGUI(InterfaceGameGUI):
                                 pygame.Rect(column * self.SQUARE_SIZE, row * self.SQUARE_SIZE, self.SQUARE_SIZE / 2,
                                             self.SQUARE_SIZE / 2))
 
-    def drawGameState(self, screen, gameState):
+    def drawGameState(self, screen, gameState, validMoves, selectedSquare):
         self.drawBoard(screen)
+        self.highlightSquares(screen, gameState, validMoves, selectedSquare)
         self.drawPieces(screen, gameState.board)
+
+    def highlightSquares(self, screen, gameState, validMoves, selectedSquare):
+        if selectedSquare != ():
+            row, column = selectedSquare
+            if isinstance(gameState.board[row][column], Piece) and gameState.board[row][column].color == ("white" if gameState.whiteToMove else "black"):
+                selectedSurface = pygame.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
+                selectedSurface.set_alpha(80)
+                selectedSurface.fill(pygame.Color("blue"))
+                screen.blit(selectedSurface, (column * self.SQUARE_SIZE, row * self.SQUARE_SIZE))
+
+                for currentMove in validMoves:
+                    if currentMove.startRow == row and currentMove.startCol == column:
+                        selectedSurface.fill(pygame.Color('yellow'))
+                        screen.blit(selectedSurface, (currentMove.endCol * self.SQUARE_SIZE, currentMove.endRow * self.SQUARE_SIZE))
+                        if isinstance(gameState.board[currentMove.endRow][currentMove.endCol], Piece) and gameState.board[currentMove.endRow][currentMove.endCol].color == ("black" if gameState.whiteToMove else "white"):
+                            selectedSurface.fill(pygame.Color('red'))
+                            screen.blit(selectedSurface,
+                                        (currentMove.endCol * self.SQUARE_SIZE, currentMove.endRow * self.SQUARE_SIZE))
+
 
     def parsePieceToKey(self, piece):
         if isinstance(piece, Piece):

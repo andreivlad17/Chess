@@ -8,7 +8,10 @@ class InterfaceGameGUI:
     def drawPieces(self, screen, board):
         pass
 
-    def drawGameState(self, screen, gameState):
+    def drawGameState(self, screen, gameState, validMoves, selectedSquare):
+        pass
+
+    def highlightSquares(self, screen, gameState, validMoves, selectedSquare):
         pass
 
     def parsePieceToKey(self, piece):
