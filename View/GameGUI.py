@@ -1,6 +1,7 @@
 import pygame
 
 from Model.Piece import Piece
+from Model.Pieces import Knight
 from View.InterfaceGameGUI import InterfaceGameGUI
 
 
@@ -50,6 +51,6 @@ class GameGUI(InterfaceGameGUI):
 
     def parsePieceToKey(self, piece):
         if isinstance(piece, Piece):
-            if type(piece).__name__ == "Knight":
-                return piece.color[0] + 'N'
+            if isinstance(piece, Knight.Knight):
+                return piece.color[0] + "N"
             return piece.color[0] + type(piece).__name__[0]
