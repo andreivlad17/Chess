@@ -22,11 +22,11 @@ class GameViewPresenter:
         gameOver = False
 
         while running:
-            humanTurn = (gameState.whiteToMove and gameState.playerOne) or (not gameState.whiteToMove and gameState.playerTwo)
+            humanTurn = (gameState.whiteToMove and not gameState.whiteAIControl) or (not gameState.whiteToMove and not gameState.blackAIControl)
             for currentEvent in pygame.event.get():
                 if currentEvent.type == pygame.QUIT:
                     running = False
-                elif currentEvent.type == pygame.MOUSEBUTTONDOWN:
+                if currentEvent.type == pygame.MOUSEBUTTONDOWN:
                     if not gameOver and humanTurn:
                         columnClickLocation, rowClickLocation = self.gameView.getClickLocation()
                         if selectedSquare == (rowClickLocation, columnClickLocation):  # deselect and restart move if the same location is clicked
@@ -45,17 +45,38 @@ class GameViewPresenter:
                                 playerClicks = []
                             else:
                                 playerClicks = [selectedSquare]
+                elif currentEvent.type == pygame.KEYDOWN:
+                    if currentEvent.key == pygame.K_r:
+                        gameState = Game()
+                        validMoves = gameState.getValidMoves()
+                        selectedSquare = ()
+                        playerClicks = []
+                        moveMade = False
 
             if not gameOver and not humanTurn:
-                agentMove = SmartAgent.findRandomMove(validMoves)
+                agentMove = SmartAgent.findBestMoveMinMax(gameState, validMoves)
+                if agentMove is None:
+                    agentMove = SmartAgent.findRandomMove(validMoves)
                 gameState.makeMove(agentMove)
                 moveMade = True
 
             if moveMade:
+                self.gameView.animateMove(gameState.moveLog[-1], self.gameView.screen, gameState.board)
                 validMoves = gameState.getValidMoves()
                 moveMade = False
 
             self.gameView.drawGameState(self.gameView.screen, gameState, validMoves, selectedSquare)
+
+            if gameState.checkMate:
+                gameOver = True
+                if gameState.whiteToMove:
+                    drawText(self.gameView.screen, "Black wins")
+                else:
+                    drawText(self.gameView.screen, "White wins")
+            elif gameState.staleMate:
+                gameOver = True
+                drawText(self.gameView.screen, "Stalemate")
+
             self.gameView.clock.tick(self.gameView.MAX_FPS)
             pygame.display.flip()
 

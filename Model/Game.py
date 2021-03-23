@@ -21,8 +21,8 @@ class Game:
     pins = []
     checks = []
 
-    playerOne = True
-    playerTwo = False
+    whiteAIControl = False
+    blackAIControl = False
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -45,10 +45,12 @@ class Game:
                         pieceType = self.board[currentRow][currentColumn]  # get the piece type
                         if isinstance(pieceType, Pawn):
                             self.board[currentRow][currentColumn].getPawnMoves(currentRow, currentColumn,
-                                                                               self.whiteToMove, self.board, self.moves, self.pins)
+                                                                               self.whiteToMove, self.board, self.moves,
+                                                                               self.pins)
                         elif isinstance(pieceType, Rook):
                             self.board[currentRow][currentColumn].getRookMoves(currentRow, currentColumn,
-                                                                               self.whiteToMove, self.board, self.moves, self.pins)
+                                                                               self.whiteToMove, self.board, self.moves,
+                                                                               self.pins)
                         elif isinstance(pieceType, Knight):
                             self.board[currentRow][currentColumn].getKnightMoves(currentRow, currentColumn,
                                                                                  self.whiteToMove, self.board,
@@ -63,7 +65,10 @@ class Game:
                                                                                 self.moves, self.pins)
                         elif isinstance(pieceType, King):
                             self.board[currentRow][currentColumn].getKingMoves(currentRow, currentColumn,
-                                                                               self.whiteToMove, self.board, self.moves, self.whiteKingLocation, self.blackKingLocation, self.checkPinsAndChecks())
+                                                                               self.whiteToMove, self.board, self.moves,
+                                                                               self.whiteKingLocation,
+                                                                               self.blackKingLocation,
+                                                                               self.checkPinsAndChecks())
         return self.moves
 
     def getValidMoves(self):
@@ -99,7 +104,9 @@ class Game:
                         if not (moves[i].endRow, moves[i].endCol) in validSquares:
                             moves.remove(moves[i])
             else:
-                King.getKingMoves(kingRow, kingCol, self.whiteToMove, self.board, moves)
+                dummyKing = King("black", (0, 1))
+                dummyKing.getKingMoves(kingRow, kingCol, self.whiteToMove, self.board, moves, self.whiteKingLocation,
+                                       self.blackKingLocation, self.checkPinsAndChecks())
         else:
             moves = self.getPossibleMoves()
 
@@ -163,4 +170,17 @@ class Game:
 
         return inCheck, pins, checks
 
+    def undoMove(self):
+        if len(self.moves):
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.movedPiece
+            self.board[move.endRow][move.endCol] = move.takenPiece
+            self.whiteToMove = not self.whiteToMove
+            if isinstance(move.movedPiece, King):
+                if move.movedPiece.color == "white":
+                    self.whiteKingLocation = (move.endRow, move.endCol)
+                elif move.movedPiece.color == "black":
+                    self.blackKingLocation = (move.endRow, move.endCol)
 
+        self.checkMate = False
+        self.staleMate = False
