@@ -74,3 +74,9 @@ class GameGUI(InterfaceGameGUI):
             if isinstance(piece, Knight.Knight):
                 return piece.color[0] + "N"
             return piece.color[0] + type(piece).__name__[0]
+
+    def getClickLocation(self):
+        mouseClickLocation = pygame.mouse.get_pos()
+        columnClickLocation = mouseClickLocation[0] // self.SQUARE_SIZE
+        rowClickLocation = mouseClickLocation[1] // self.SQUARE_SIZE
+        return columnClickLocation, rowClickLocation

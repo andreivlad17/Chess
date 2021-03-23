@@ -21,6 +21,9 @@ class Game:
     pins = []
     checks = []
 
+    playerOne = True
+    playerTwo = False
+
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.movedPiece
@@ -161,25 +164,3 @@ class Game:
         return inCheck, pins, checks
 
 
-
-    def squareUnderAttack(self, row, column):
-        self.whiteToMove = not self.whiteToMove
-        enemyMoves = self.getPossibleMoves()
-        self.whiteToMove = not self.whiteToMove
-        for move in enemyMoves:
-            if move.endRow == row and move.endCol == column:
-                self.whiteToMove = not self.whiteToMove
-                return True
-        return False
-
-    def undoMove(self):
-        if len(self.moves):
-            move = self.moveLog.pop()
-            self.board[move.startRow][move.startCol] = move.movedPiece
-            self.board[move.endRow][move.endCol] = move.takenPiece
-            self.whiteToMove = not self.whiteToMove
-            if isinstance(move.movedPiece, King):
-                if move.movedPiece.color == "white":
-                    self.whiteKingLocation = (move.endRow, move.endCol)
-                elif move.movedPiece.color == "black":
-                    self.blackKingLocation = (move.endRow, move.endCol)
