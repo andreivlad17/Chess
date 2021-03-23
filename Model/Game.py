@@ -21,8 +21,8 @@ class Game:
     pins = []
     checks = []
 
-    whiteAIControl = False
-    blackAIControl = False
+    whiteAIControl = True
+    blackAIControl = True
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
@@ -110,7 +110,32 @@ class Game:
         else:
             moves = self.getPossibleMoves()
 
+        if len(moves) == 0:
+            if self.isInCheck():
+                checkmate = True
+            else:
+                self.staleMate = True
+        else:
+            checkmate = False
+            stalemate = False
+
         return moves
+
+    def isInCheck(self):
+        if self.whiteToMove:
+            return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    def squareUnderAttack(self, row, column):
+        self.whiteToMove = not self.whiteToMove
+        enemyMoves = self.getPossibleMoves()
+        self.whiteToMove = not self.whiteToMove
+        for move in enemyMoves:
+            if move.endRow == row and move.endCol == column:
+                self.whiteToMove = not self.whiteToMove
+                return True
+        return False
 
     def checkPinsAndChecks(self):
         pins = []
@@ -132,7 +157,7 @@ class Game:
             possiblePin = ()
             for i in range(1, 8):
                 endRow = startRow + currentDirection[0] * i
-                endCol = startRow + currentDirection[1] * i
+                endCol = startCol + currentDirection[1] * i
                 if 0 <= endRow < 8 and 0 <= endCol < 8:
                     endPiece = self.board[endRow][endCol]
                     if isinstance(endPiece, Piece) and endPiece.color == allyColor and not isinstance(endPiece, King):
@@ -171,7 +196,7 @@ class Game:
         return inCheck, pins, checks
 
     def undoMove(self):
-        if len(self.moves):
+        if len(self.moveLog):
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.movedPiece
             self.board[move.endRow][move.endCol] = move.takenPiece

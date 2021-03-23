@@ -9,10 +9,7 @@ MIN_MAX_DEPTH = 2
 
 
 def findRandomMove(validMoves):
-    if len(validMoves):
-        return validMoves[random.randint(0, len(validMoves) - 1)]
-    else:
-        return None
+    return random.choice(validMoves)
 
 
 def findBestMove(gameState, validMoves):
@@ -23,12 +20,12 @@ def findBestMove(gameState, validMoves):
 
     for playerMove in validMoves:
         gameState.makeMove(playerMove)
-        opponentMoves = gameState.getValidMoves()
         if gameState.staleMate:
             opponentMaxScore = STALEMATE_SCORE
         elif gameState.checkMate:
             opponentMaxScore = -CHECKMATE_SCORE
         else:
+            opponentMoves = gameState.getValidMoves()
             opponentMaxScore = -CHECKMATE_SCORE
             for opponentMove in opponentMoves:
                 gameState.makeMove(opponentMove)
@@ -53,6 +50,7 @@ def findBestMove(gameState, validMoves):
 def findBestMoveMinMax(gameState, validMoves):
     global nextMove
     nextMove = None
+    random.shuffle(validMoves)
     findMoveMinMax(gameState, validMoves, MIN_MAX_DEPTH, gameState.whiteToMove)
     return nextMove
 
@@ -60,7 +58,7 @@ def findBestMoveMinMax(gameState, validMoves):
 def findMoveMinMax(gameState, validMoves, depth, whiteToMove):
     global nextMove
     if depth == 0:
-        return getColorScore(gameState.board)
+        return scoreHeuristic(gameState)
 
     if whiteToMove:
         maxScore = -CHECKMATE_SCORE
@@ -81,14 +79,14 @@ def findMoveMinMax(gameState, validMoves, depth, whiteToMove):
             nextMoves = gameState.getValidMoves()
             score = findMoveMinMax(gameState, nextMoves, depth - 1, True)
             if score < minScore:
-                maxScore = score
+                minScore = score
                 if depth == MIN_MAX_DEPTH:
                     nextMove = validMove
             gameState.undoMove()
         return minScore
 
 
-def scoreBoard(gameState):
+def scoreHeuristic(gameState):
     if gameState.checkMate:
         if gameState.whiteToMove:
             return -CHECKMATE_SCORE
@@ -106,6 +104,7 @@ def scoreBoard(gameState):
                 score -= pieceScore[type(square).__name__]
 
     return score
+
 
 def getColorScore(board):
     score = 0

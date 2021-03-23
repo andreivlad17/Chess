@@ -70,12 +70,12 @@ class GameViewPresenter:
             if gameState.checkMate:
                 gameOver = True
                 if gameState.whiteToMove:
-                    drawText(self.gameView.screen, "Black wins")
+                    self.gameView.drawText(self.gameView.screen, "Black wins")
                 else:
-                    drawText(self.gameView.screen, "White wins")
+                    self.gameView.drawText(self.gameView.screen, "White wins")
             elif gameState.staleMate:
                 gameOver = True
-                drawText(self.gameView.screen, "Stalemate")
+                self.gameView.drawText(self.gameView.screen, "Stalemate")
 
             self.gameView.clock.tick(self.gameView.MAX_FPS)
             pygame.display.flip()
