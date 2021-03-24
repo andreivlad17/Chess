@@ -1,4 +1,5 @@
 import pygame
+import pygame_gui
 
 from Model import SmartAgent
 from Model.Game import Game
@@ -19,7 +20,7 @@ class GameViewPresenter:
         selectedSquare = ()
         playerClicks = []  # initial piece position, legal move location
         running = True
-        gameOver = False
+        gameOver = True
 
         while running:
             humanTurn = (gameState.whiteToMove and not gameState.whiteAIControl) or (not gameState.whiteToMove and not gameState.blackAIControl)
@@ -45,13 +46,38 @@ class GameViewPresenter:
                                 playerClicks = []
                             else:
                                 playerClicks = [selectedSquare]
-                elif currentEvent.type == pygame.KEYDOWN:
-                    if currentEvent.key == pygame.K_r:
+                if currentEvent.type == pygame.USEREVENT:
+                    #if currentEvent.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    print("test button")
+
+                    if currentEvent.ui_element == self.gameView.startGameButton:
+                        print("test start")
+                        gameOver = False
                         gameState = Game()
                         validMoves = gameState.getValidMoves()
                         selectedSquare = ()
                         playerClicks = []
                         moveMade = False
+                    elif currentEvent.ui_element == self.gameView.restartGameButton:
+                        print("test restart")
+                        gameState = Game()
+                        validMoves = gameState.getValidMoves()
+                        selectedSquare = ()
+                        playerClicks = []
+                        moveMade = False
+                    elif currentEvent.ui_element == self.gameView.pvpButton:
+                        print("test pvp")
+                        gameState.whiteAIControl = False
+                        gameState.blackAIControl = False
+                    elif currentEvent.ui_element == self.gameView.pvAIButton:
+                        print("test pve")
+                        gameState.whiteAIControl = False
+                        gameState.blackAIControl = True
+                    elif currentEvent.ui_element == self.gameView.AIvAIButton:
+                        print("test ai")
+                        gameState.whiteAIControl = True
+                        gameState.blackAIControl = True
+                    self.gameView.manager.process_events(currentEvent)
 
             if not gameOver and not humanTurn:
                 agentMove = SmartAgent.findBestMoveMinMax(gameState, validMoves)

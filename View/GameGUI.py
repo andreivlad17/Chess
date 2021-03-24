@@ -1,4 +1,5 @@
 import pygame
+import pygame_gui
 
 from Model.Piece import Piece
 from Model.Pieces import Knight
@@ -14,8 +15,18 @@ class GameGUI(InterfaceGameGUI):
     MAX_FPS = 15
 
     pygame.init()
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    pygame.display.set_caption('Chess')
+    screen = pygame.display.set_mode((WINDOW_WIDTH + 200, WINDOW_HEIGHT))
+    background = pygame.Surface((800, 600))
+    background.fill(pygame.Color('#edebe4'))
+    manager = pygame_gui.UIManager((800, 600))
     clock = pygame.time.Clock()
+
+    startGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((650, 180), (100, 50)), text='START', manager=manager)
+    restartGameButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((650, 380), (100, 50)), text='RESTART', manager=manager)
+    pvpButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((615, 280), (50, 50)), text='PvP', manager=manager)
+    pvAIButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((675, 280), (50, 50)), text='PvAI', manager=manager)
+    AIvAIButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((735, 280), (50, 50)), text='AIvAI', manager=manager)
 
     def __init__(self):
         self.screen.fill(pygame.Color("White"))
@@ -47,15 +58,19 @@ class GameGUI(InterfaceGameGUI):
                                             self.SQUARE_SIZE / 2))
 
     def drawGameState(self, screen, gameState, validMoves, selectedSquare):
+        time_delta = self.clock.tick(60)/1000.0
+        self.manager.update(time_delta)
+        self.screen.blit(self.background, (0, 0))
         self.drawBoard(screen)
         self.highlightSquares(screen, gameState, validMoves, selectedSquare)
         self.drawPieces(screen, gameState.board)
+        self.manager.draw_ui(screen)
 
     def highlightSquares(self, screen, gameState, validMoves, selectedSquare):
         if selectedSquare != ():
             row, column = selectedSquare
             if isinstance(gameState.board[row][column], Piece) and gameState.board[row][column].color == (
-            "white" if gameState.whiteToMove else "black"):
+                    "white" if gameState.whiteToMove else "black"):
                 selectedSurface = pygame.Surface((self.SQUARE_SIZE, self.SQUARE_SIZE))
                 selectedSurface.set_alpha(80)
                 selectedSurface.fill(pygame.Color("blue"))
@@ -68,7 +83,7 @@ class GameGUI(InterfaceGameGUI):
                                     (currentMove.endCol * self.SQUARE_SIZE, currentMove.endRow * self.SQUARE_SIZE))
                         if isinstance(gameState.board[currentMove.endRow][currentMove.endCol], Piece) and \
                                 gameState.board[currentMove.endRow][currentMove.endCol].color == (
-                        "black" if gameState.whiteToMove else "white"):
+                                "black" if gameState.whiteToMove else "white"):
                             selectedSurface.fill(pygame.Color('red'))
                             screen.blit(selectedSurface,
                                         (currentMove.endCol * self.SQUARE_SIZE, currentMove.endRow * self.SQUARE_SIZE))
@@ -81,22 +96,26 @@ class GameGUI(InterfaceGameGUI):
         framePerSquare = 10
         frameCount = (abs(dRow) + abs(dCol)) * framePerSquare
         for frame in range(frameCount + 1):
-            row, column = (move.startRow + dRow * frame/frameCount, move.startCol + dCol * frame/frameCount)
+            row, column = (move.startRow + dRow * frame / frameCount, move.startCol + dCol * frame / frameCount)
             self.drawBoard(screen)
             self.drawPieces(screen, board)
             color = colors[(move.endRow + move.endCol) % 2]
-            endSquare = pygame.Rect(move.endCol * self.SQUARE_SIZE, move.endRow * self.SQUARE_SIZE, self.SQUARE_SIZE, self.SQUARE_SIZE)
+            endSquare = pygame.Rect(move.endCol * self.SQUARE_SIZE, move.endRow * self.SQUARE_SIZE, self.SQUARE_SIZE,
+                                    self.SQUARE_SIZE)
             pygame.draw.rect(screen, color, endSquare)
             if move.takenPiece != "--":
                 screen.blit(self.PIECES_IMAGES[self.parsePieceToKey(move.takenPiece)], endSquare)
-            screen.blit(self.PIECES_IMAGES[self.parsePieceToKey(move.movedPiece)], pygame.Rect(column * self.SQUARE_SIZE, row * self.SQUARE_SIZE, self.SQUARE_SIZE, self.SQUARE_SIZE))
+            screen.blit(self.PIECES_IMAGES[self.parsePieceToKey(move.movedPiece)],
+                        pygame.Rect(column * self.SQUARE_SIZE, row * self.SQUARE_SIZE, self.SQUARE_SIZE,
+                                    self.SQUARE_SIZE))
             pygame.display.flip()
             self.clock.tick(60)
 
     def drawText(self, screen, text):
         font = pygame.font.SysFont("Helvetica", 50, True, False)
         textObject = font.render(text, False, pygame.Color("Black"))
-        textLocation = pygame.Rect(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT).move(self.WINDOW_WIDTH/2 - textObject.get_width()/2, self.WINDOW_HEIGHT/2 - textObject.get_height()/2)
+        textLocation = pygame.Rect(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT).move(
+            self.WINDOW_WIDTH / 2 - textObject.get_width() / 2, self.WINDOW_HEIGHT / 2 - textObject.get_height() / 2)
         screen.blit(textObject, textLocation)
 
     def parsePieceToKey(self, piece):

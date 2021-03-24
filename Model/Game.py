@@ -21,8 +21,8 @@ class Game:
     pins = []
     checks = []
 
-    whiteAIControl = True
-    blackAIControl = True
+    whiteAIControl = False
+    blackAIControl = False
 
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
