@@ -36,7 +36,7 @@ class GameGUI(InterfaceGameGUI):
         piecesNames = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bP",
                        "wP", "wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         for currentPiece in piecesNames:
-            self.PIECES_IMAGES[currentPiece] = pygame.image.load("./images/" + currentPiece + ".png")
+            self.PIECES_IMAGES[currentPiece] = pygame.image.load("../images/" + currentPiece + ".png")
 
     def drawBoard(self, screen):
         global colors
