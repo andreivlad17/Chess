@@ -26,6 +26,12 @@ class GameGUI():
     pvAIButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((675, 280), (50, 50)), text='PvAI', manager=manager)
     AIvAIButton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((735, 280), (50, 50)), text='AIvAI', manager=manager)
 
+    lang_ro = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((605, 50), (40, 40)), text='RO', manager=manager)
+    lang_en = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((655, 50), (40, 40)), text='EN', manager=manager)
+    lang_fr = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((705, 50), (40, 40)), text='FR', manager=manager)
+    lang_ch = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((755, 50), (40, 40)), text='CH', manager=manager)
+
+    # lang_ch.set
     def __init__(self):
         self.screen.fill(pygame.Color("White"))
         self.loadImages()

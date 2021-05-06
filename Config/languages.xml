@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<languages>
+    <language name="romanian">
+        <start>Incepe</start>
+        <restart>Reincepe</restart>
+        <pvp>OvO</pvp>
+        <pvai>OvC</pvai>
+        <aivai>CvC</aivai>
+    </language>
+    <language name="english">
+        <start>Start</start>
+        <restart>Restart</restart>
+        <pvp>PvP</pvp>
+        <pvai>PvAI</pvai>
+        <aivai>AIvAI</aivai>
+    </language>
+    <language name="french">
+        <start>Démarrer</start>
+        <restart>Recommencer</restart>
+        <pvp>JvJ</pvp>
+        <pvai>JvC</pvai>
+        <aivai>CvC</aivai>
+    </language>
+    <language name="chinese">
+        <start>Ching-Chang-Start</start>
+        <restart>Re-Ching-Start</restart>
+        <pvp>播v播</pvp>
+        <pvai>播v电</pvai>
+        <aivai>电v电</aivai>
+    </language>
+</languages>

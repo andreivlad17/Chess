@@ -1,4 +1,5 @@
 import pygame
+import xml.etree.ElementTree as ET
 
 from MVC.Model import SmartAgent
 from MVC.Model.Game import Game
@@ -11,6 +12,8 @@ class GameController:
         self.gameState = gameModel
 
     def getGameState(self):
+        languageXmlTree = ET.parse('../Config/languages.xml')
+        languagesRoot = languageXmlTree.getroot()
         validMoves = self.gameState.getValidMoves()
         moveMade = False
         selectedSquare = ()
@@ -42,11 +45,9 @@ class GameController:
                                 playerClicks = []
                             else:
                                 playerClicks = [selectedSquare]
-                if currentEvent.type == pygame.USEREVENT:
-                    #if currentEvent.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                    print("test button")
 
-                    if currentEvent.ui_element == self.gameView.startGameButton:
+                    # Side button handlers
+                    if self.gameView.startGameButton.rect.collidepoint(currentEvent.pos):
                         print("test start")
                         gameOver = False
                         self.gameState = Game()
@@ -54,7 +55,7 @@ class GameController:
                         selectedSquare = ()
                         playerClicks = []
                         moveMade = False
-                    elif currentEvent.ui_element == self.gameView.restartGameButton:
+                    elif self.gameView.restartGameButton.rect.collidepoint(currentEvent.pos):
                         print("test restart")
                         self.gameState = Game()
                         validMoves = []
@@ -62,18 +63,65 @@ class GameController:
                         playerClicks = []
                         moveMade = False
                         self.drawGameState(self.gameView.screen, self.gameState, self.gameState.getValidMoves(), selectedSquare)
-                    elif currentEvent.ui_element == self.gameView.pvpButton:
+                    elif self.gameView.pvpButton.rect.collidepoint(currentEvent.pos):
                         print("test pvp")
                         self.gameState.whiteAIControl = False
                         self.gameState.blackAIControl = False
-                    elif currentEvent.ui_element == self.gameView.pvAIButton:
+                    elif self.gameView.pvAIButton.rect.collidepoint(currentEvent.pos):
                         print("test pve")
                         self.gameState.whiteAIControl = False
                         self.gameState.blackAIControl = True
-                    elif currentEvent.ui_element == self.gameView.AIvAIButton:
+                    elif self.gameView.AIvAIButton.rect.collidepoint(currentEvent.pos):
                         print("test ai")
                         self.gameState.whiteAIControl = True
                         self.gameState.blackAIControl = True
+                    elif self.gameView.lang_ro.rect.collidepoint(currentEvent.pos):
+                        print("test ro")
+                        for language in languagesRoot.findall("language"):
+                            if language.get('name') == "romanian":
+                                romanian = language
+                                break
+                        self.gameView.startGameButton.set_text(romanian.find('start').text)
+                        self.gameView.restartGameButton.set_text(romanian.find('restart').text)
+                        self.gameView.pvpButton.set_text(romanian.find('pvp').text)
+                        self.gameView.pvAIButton.set_text(romanian.find('pvai').text)
+                        self.gameView.AIvAIButton.set_text(romanian.find('aivai').text)
+                    elif self.gameView.lang_en.rect.collidepoint(currentEvent.pos):
+                        print("test en")
+                        english = None
+                        for language in languagesRoot.findall("language"):
+                            if language.get('name') == "english":
+                                english = language
+                                break
+                        self.gameView.startGameButton.set_text(english.find('start').text)
+                        self.gameView.restartGameButton.set_text(english.find('restart').text)
+                        self.gameView.pvpButton.set_text(english.find('pvp').text)
+                        self.gameView.pvAIButton.set_text(english.find('pvai').text)
+                        self.gameView.AIvAIButton.set_text(english.find('aivai').text)
+                    elif self.gameView.lang_fr.rect.collidepoint(currentEvent.pos):
+                        print("test fr")
+                        french = None
+                        for language in languagesRoot.findall("language"):
+                            if language.get('name') == "french":
+                                french = language
+                                break
+                        self.gameView.startGameButton.set_text(french.find('start').text)
+                        self.gameView.restartGameButton.set_text(french.find('restart').text)
+                        self.gameView.pvpButton.set_text(french.find('pvp').text)
+                        self.gameView.pvAIButton.set_text(french.find('pvai').text)
+                        self.gameView.AIvAIButton.set_text(french.find('aivai').text)
+                    elif self.gameView.lang_ch.rect.collidepoint(currentEvent.pos):
+                        print("test ch")
+                        chinese = None
+                        for language in languagesRoot.findall("language"):
+                            if language.get('name') == "chinese":
+                                chinese = language
+                                break
+                        self.gameView.startGameButton.set_text(chinese.find('start').text)
+                        self.gameView.restartGameButton.set_text(chinese.find('restart').text)
+                        self.gameView.pvpButton.set_text(chinese.find('pvp').text)
+                        self.gameView.pvAIButton.set_text(chinese.find('pvai').text)
+                        self.gameView.AIvAIButton.set_text(chinese.find('aivai').text)
                     self.gameView.manager.process_events(currentEvent)
 
             if not gameOver and not humanTurn:
