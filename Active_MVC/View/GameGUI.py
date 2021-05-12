@@ -1,12 +1,12 @@
 import pygame
 import pygame_gui
 
-from Active_MVC.Model.IObserver import IObserverView
+from Active_MVC.Model.IObserver import IObserver
 from Active_MVC.Model.Piece import Piece
 from Active_MVC.Model.Pieces import Knight
 
 
-class GameGUI(IObserverView):
+class GameGUI(IObserver):
     WINDOW_HEIGHT = 600
     WINDOW_WIDTH = 600
     DIMENSION = 8

@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 from Active_MVC.Model import SmartAgent
 from Active_MVC.Model.Game import Game
+from Active_MVC.Model.IObserver import IObserver
 from Active_MVC.Model.Move import Move
 
 
@@ -62,7 +63,8 @@ class GameController:
                         selectedSquare = ()
                         playerClicks = []
                         moveMade = False
-                        self.gameState.notify(self.gameView, self.gameView.screen, self.gameState, validMoves, selectedSquare)
+                        self.requestUpdate(validMoves, selectedSquare)
+                        #self.gameState.notify(self.gameView, self.gameView.screen, self.gameState, validMoves, selectedSquare)
                         # self.drawGameState(self.gameView.screen, self.gameState, self.gameState.getValidMoves(), selectedSquare)
                     elif self.gameView.pvpButton.rect.collidepoint(currentEvent.pos):
                         print("test pvp")
@@ -138,8 +140,9 @@ class GameController:
                 validMoves = self.gameState.getValidMoves()
                 moveMade = False
 
-            self.gameState.notify(self.gameView, self.gameView.screen, self.gameState, validMoves, selectedSquare)
+            # self.gameState.notify(self.gameView, self.gameView.screen, self.gameState, validMoves, selectedSquare)
             # self.drawGameState(self.gameView.screen, self.gameState, validMoves, selectedSquare)
+            self.requestUpdate(validMoves, selectedSquare)
 
             if self.gameState.checkMate:
                 gameOver = True
@@ -202,3 +205,9 @@ class GameController:
                                     self.gameView.SQUARE_SIZE))
             pygame.display.flip()
             self.gameView.clock.tick(60)
+
+    def requestUpdate(self, validMoves, selectedSquare):
+        self.gameState.notify(self.gameView, self.gameView.screen, self.gameState, validMoves, selectedSquare)
+        self.drawPieces(self.gameView.screen, self.gameState.board)
+        self.gameView.manager.draw_ui(self.gameView.screen)
+

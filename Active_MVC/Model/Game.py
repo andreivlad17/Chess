@@ -237,21 +237,7 @@ class Game(IObservable, ABC):
 
     # Observer pattern subject method implementations
     def notify(self, view, screen, gameState, validMoves, selectedSquare):
-        # self.observerView.update(screen, gameState, validMoves, selectedSquare)
-        time_delta = view.clock.tick(60) / 1000.0
-        view.manager.update(time_delta)
-        screen.blit(view.background, (0, 0))
-        view.drawBoard(screen)
-        view.highlightSquares(screen, gameState, validMoves, selectedSquare)
-        for row in range(view.DIMENSION):
-            for column in range(view.DIMENSION):
-                piece = self.board[row][column]
-                if piece != "--":
-                    screen.blit(view.PIECES_IMAGES[view.parsePieceToKey(piece)],
-                                pygame.Rect(column * view.SQUARE_SIZE, row * view.SQUARE_SIZE,
-                                            view.SQUARE_SIZE / 2,
-                                            view.SQUARE_SIZE / 2))
-        view.manager.draw_ui(screen)
+        view.update(screen, gameState, validMoves, selectedSquare)
         for observer in self.observersPieces:
             observer.update()
 

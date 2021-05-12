@@ -7,7 +7,7 @@ class IObserverPiece:
         pass
 
 
-class IObserverView:
+class IObserver:
     @abstractmethod
     def update(self, screen, gameState, validMoves, selectedSquare):
         pass
